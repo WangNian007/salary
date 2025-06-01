@@ -21,4 +21,11 @@ public class Result<T> {
         result.setData(data);
         return result;
     }
+
+    public static <T> Result<T> redirectLogin(String message) {
+        Result<T> result = new Result<>();
+        result.setCode(401); // 或者自定义错误码
+        result.setData(null);
+        return result;
+    }
 }
