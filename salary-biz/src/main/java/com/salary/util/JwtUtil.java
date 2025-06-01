@@ -1,33 +1,59 @@
 package com.salary.util;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
 
-    private JwtUtil() {}
 
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
-    private static final long EXPIRATION = 60 * 60 * 1000; // 1小时
+    @Value("${custom.jwt.secretKey}")
+    private String secretKey;
 
-    public static String generateToken(String username) {
+    private static final long EXPIRATION = 1000 * 60 * 60; // 1小时过期
+
+    // 生成一个安全秘钥（长度至少256位，用HS256）
+    private SecretKey key;
+
+
+    public String generateToken(String username) {
+        Date now = new Date();
+        Date exp = new Date(now.getTime() + EXPIRATION);
+
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key)
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                // signWith 需要 Key 和 SignatureAlgorithm
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public static Claims parseToken(String token) throws JwtException {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String validateTokenAndGetUsername(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (JwtException e) {
+            return null;
+        }
     }
 }
+

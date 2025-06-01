@@ -20,3 +20,12 @@ spring:
       test-while-idle: true
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
+
+
+custom:
+  redis:
+    host: ${REDIS_URL}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+  jwt:
+    secretKey: ${JWT_SECRET_KEY}
