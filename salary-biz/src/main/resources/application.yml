@@ -1,2 +1,11 @@
+spring:
+  profiles:
+    active: dev   # 默认激活dev环境，启动时可覆盖
+
+# 公共配置写这里，例如日志、端口等
 server:
   port: 2569
+
+logging:
+  level:
+    root: INFO

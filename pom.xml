@@ -18,7 +18,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.boot.version>3.5.0</spring.boot.version>
         <mysql.version>8.3.0</mysql.version>
-        <mybatis.plus.version>3.5.6</mybatis.plus.version>
+        <mybatis.plus.version>3.5.12</mybatis.plus.version>
+        <mybatis.spring.version>3.0.3</mybatis.spring.version>
         <lombok.version>1.18.24</lombok.version>
+        <druid.version>1.2.25</druid.version>
     </properties>
 </project>
